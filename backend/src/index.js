@@ -106,19 +106,5 @@ async function startServer() {
 }
 
 startServer();
-```
-
-Save the file (Ctrl+S), then push to GitHub:
-```
-git add .
-git commit -m "auto-run migrations on startup"
-git push
-```
-
-Render will redeploy automatically. In the logs you'll see:
-```
-✅  Database schema ready.
-🐝 StudyHive API running on port 10000 [production]
-==> Your service is live 🎉
 
 module.exports = app;

@@ -87,8 +87,38 @@ app.use((req, res) => res.status(404).json({ error: `Route ${req.method} ${req.p
 app.use(errorHandler);
 
 // ─── Start ────────────────────────────────────────────────────────────────────
-app.listen(PORT, () => {
-  console.log(`🐝 StudyHive API running on port ${PORT} [${process.env.NODE_ENV || 'development'}]`);
-});
+async function startServer() {
+  // Auto-run migrations on every startup
+  try {
+    const fs   = require('fs');
+    const path = require('path');
+    const { pool } = require('./config/db');
+    const sql  = fs.readFileSync(path.join(__dirname, '../sql/schema.sql'), 'utf8');
+    await pool.query(sql);
+    console.log('✅  Database schema ready.');
+  } catch (err) {
+    console.error('⚠️  Migration warning:', err.message);
+  }
+
+  app.listen(PORT, () => {
+    console.log(`🐝 StudyHive API running on port ${PORT} [${process.env.NODE_ENV || 'development'}]`);
+  });
+}
+
+startServer();
+```
+
+Save the file (Ctrl+S), then push to GitHub:
+```
+git add .
+git commit -m "auto-run migrations on startup"
+git push
+```
+
+Render will redeploy automatically. In the logs you'll see:
+```
+✅  Database schema ready.
+🐝 StudyHive API running on port 10000 [production]
+==> Your service is live 🎉
 
 module.exports = app;
